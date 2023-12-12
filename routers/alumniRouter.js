@@ -4,17 +4,13 @@ const Contact = require("../models/contactModel");
 
 const alumniRoute = require("express").Router();
 
-alumniRoute.post("/",handleFileUpload, async (req, res) => {
+alumniRoute.post("/", async (req, res) => {
   try {
-    const { name,email, fathersName, mothersName, teachersName, lastClassStudied ,yearOfPassing,principalName ,testimony} = req.body;
+    const { name,email, fathersName, mothersName, teachersName, lastClassStudied ,yearOfPassing,principalName } = req.body;
   
       // Validate user input
-      if (!name || !email || !fathersName || !mothersName || !teachersName || !lastClassStudied || !yearOfPassing || !principalName || !testimony ) {
+      if (!name || !email || !fathersName || !mothersName || !teachersName || !lastClassStudied || !yearOfPassing || !principalName  ) {
         return res.status(400).json({ message: "Please fill all the fields" });
-      }
-  
-      if (!req.file) {
-        return res.status(400).json({ message: "Please upload your image" });
       }
   
       const existingUser = await Alumni.findOne({ email });
@@ -25,13 +21,13 @@ alumniRoute.post("/",handleFileUpload, async (req, res) => {
         });
       }
   
-      const profilePicture = req.file.buffer.toString("base64");
+     
   
      await new Alumni({
         name,
         email,
-       fathersName,mothersName,principalName,teachersName,yearOfPassing,testimony,lastClassStudied,
-       image :  profilePicture,
+       fathersName,mothersName,principalName,teachersName,yearOfPassing,lastClassStudied,
+   
       }).save();
   
       
