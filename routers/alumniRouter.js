@@ -9,9 +9,9 @@ alumniRoute.post("/", async (req, res) => {
     const { name,email, fathersName, mothersName, teachersName, lastClassStudied ,yearOfPassing,principalName } = req.body;
   
       // Validate user input
-      if (!name || !email || !fathersName || !mothersName || !teachersName || !lastClassStudied || !yearOfPassing || !principalName  ) {
-        return res.status(400).json({ message: "Please fill all the fields" });
-      }
+      // if (!name || !email || !fathersName || !mothersName || !teachersName || !lastClassStudied || !yearOfPassing || !principalName  ) {
+      //   return res.status(400).json({ message: "Please fill all the fields" });
+      // }
   
       const existingUser = await Alumni.findOne({ email });
   
@@ -35,7 +35,7 @@ alumniRoute.post("/", async (req, res) => {
       message: "Form has been successfully submitted",
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message,errormsg:"error" });
   }
 });
 alumniRoute.get("/", async (req, res) => {
