@@ -6,36 +6,45 @@ const alumniRoute = require("express").Router();
 
 alumniRoute.post("/", async (req, res) => {
   try {
-    const { name,email, fathersName, mothersName, teachersName, lastClassStudied ,yearOfPassing,principalName } = req.body;
-  
-      // Validate user input
-      // if (!name || !email || !fathersName || !mothersName || !teachersName || !lastClassStudied || !yearOfPassing || !principalName  ) {
-      //   return res.status(400).json({ message: "Please fill all the fields" });
-      // }
-  
-      const existingUser = await Alumni.findOne({ email });
-  
-      if (existingUser) {
-        return res.json({
-          message: "You have already submitted the form ",
-        });
-      }
-  
-     
-  
-     await new Alumni({
-        name,
-        email,
-       fathersName,mothersName,principalName,teachersName,yearOfPassing,lastClassStudied,
-   
-      }).save();
-  
-      
+    const {
+      fullName,
+      mobileNumber,
+      emailAddress,
+      passedOutBatch,
+      currentPosition,
+      maritalStatus,
+      anythingToShare,
+      isVisiting
+    } = req.body;
+
+    // Validate user input
+    // Note: Add your own validation logic here if needed
+
+    const existingUser = await Alumni.findOne({ emailAddress });
+
+    if (existingUser) {
+      return res.json({
+        message: "You have already submitted the form ",
+      });
+    }
+
+    await new Alumni({
+      fullName,
+      mobileNumber,
+      emailAddress,
+      passedOutBatch,
+      currentPosition,
+      maritalStatus,
+      anythingToShare,
+      isVisiting,
+    }).save();
+
     res.status(201).json({
       message: "Form has been successfully submitted",
     });
   } catch (error) {
-    res.status(500).json({ message: error.message,errormsg:"error" });
+    console.error("Error submitting form:", error);
+    res.status(500).json({ message: "Internal Server Error", errormsg: error.message });
   }
 });
 alumniRoute.get("/", async (req, res) => {
