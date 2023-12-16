@@ -1,40 +1,40 @@
 const mongoose = require('mongoose');
 
 const alumniSchema = new mongoose.Schema({
-    name: {
-    type: String,
-    required: true
-  },email: {
-    type: String,
-    required: true
-  },
-  fathersName: {
+  fullName: {
     type: String,
     required: true,
-   
   },
-  mothersName: {
-    type: String,
-    required: true
-  },
-  teachersName: {
+  mobileNumber: {
     type: String,
     required: true,
-    
   },
-  lastClassStudied: {
+  emailAddress: {
     type: String,
-    required: true
+    required: true,
   },
-  yearOfPassing :{
-    type: Number,
-    required:true
+  passedOutBatch: {
+    type: String,
+    required: true,
   },
-  principalName:{
-    type:String,
-    required:true
+  currentPosition: {
+    type: String,
+    required: true,
   },
-date:{type:Date,default:Date.now}
+  maritalStatus: {
+    type: String,
+    required: true,
+    enum: ['single', 'married'],
+  },
+  anythingToShare: {
+    type: String,
+    required: true,
+  },
+  isVisiting: {
+    type: String,
+    required: true,
+    enum: ['yes', 'no'],
+  },
 });
 
 const Alumni = mongoose.model('Alumni', alumniSchema);
