@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const userRoute = require("./routers/userRouter");
 const clubRoute = require("./routers/clubRouter");
+const admissionRoute = require("./routers/admissionRouter");
 const contactRoute = require("./routers/contactRouter");
 const alumniRoute = require("./routers/alumniRouter");
 const announcementRouter = require("./routers/announcementRouter");
@@ -38,6 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRoute);
 app.use("/clubs", clubRoute);
+app.use("/admissions", admissionRoute);
 app.use("/feedback", contactRoute);
 app.use("/alumni", alumniRoute);
 app.use("/announcements", announcementRouter);
