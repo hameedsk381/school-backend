@@ -2,7 +2,6 @@ const express = require('express');
 const Admission = require('../models/AdmissionModel.js');
 const admissionRouter = express.Router();
 
-
 // Get all admissions
 admissionRouter.get('/', async (req, res) => {
   try {
@@ -17,18 +16,66 @@ admissionRouter.get('/', async (req, res) => {
 admissionRouter.get('/:id', getAdmission, (req, res) => {
   res.json(res.admission);
 });
-
+const storefile = async (data) => {
+  try {
+    const filedata = new FormData();
+filedata.append('file',data);
+    const response = await axios.post('https://reanarration-fastify-api.onrender.com/upload', filedata);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
 // Create an admission
 admissionRouter.post('/', async (req, res) => {
+    
+  
   const admission = new Admission({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+    studentName: req.body.studentName,
     email: req.body.email,
-    phoneNum: req.body.phoneNum
+    phoneNumber: req.body.phoneNumber,
+    gender: req.body.gender,
+    dateOfBirth: req.body.dateOfBirth,
+    motherTongue: req.body.motherTongue,
+    fatherName: req.body.fatherName,
+    fatherOccupation: req.body.fatherOccupation,
+    motherName: req.body.motherName,
+    motherOccupation: req.body.motherOccupation,
+    bankAccountNum: req.body.bankAccountNum,
+    bankName: req.body.bankName,
+    bankBranch: req.body.bankBranch,
+    ifscCode: req.body.ifscCode,
+    whatsappNumber: req.body.whatsappNumber,
+    guardianName: req.body.guardianName,
+    guardianOccupation: req.body.guardianOccupation,
+    nationality: req.body.nationality,
+    caste: req.body.caste,
+    subCaste: req.body.subCaste,
+    residentialAddress: req.body.residentialAddress,
+    previousSchool: req.body.previousSchool,
+    schoolCode: req.body.schoolCode,
+    studiedClass: req.body.studiedClass,
+    medium: req.body.medium,
+    isEligibleForPromotion: req.body.isEligibleForPromotion,
+    daysPresentInPreviousSchool: req.body.daysPresentInPreviousSchool,
+    transferCertificateNum: req.body.transferCertificateNum,
+    classJoined: req.body.classJoined,
+    childInfoNum: req.body.childInfoNum,
+    firstLanguage: req.body.firstLanguage,
+    secondLanguage: req.body.secondLanguage,
+    personalMarksIdentification1: req.body.personalMarksIdentification1,
+    personalMarksIdentification2: req.body.personalMarksIdentification2,
+    remarks: req.body.remarks,
+    acceptTerms: req.body.acceptTerms,
+    signature: req.body.signature,
+    passportPhoto:req.body.passportPhoto
   });
   try {
+
+  
+   
     const newadmission = await admission.save();
-    res.status(201).json(newadmission);
+    res.status(201).json({message : 'Admssion submitted successully'});
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
