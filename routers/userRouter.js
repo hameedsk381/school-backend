@@ -8,6 +8,7 @@ const authHandler = require("../middlewares/authHandler");
 require("dotenv").config();
 const userRoute = express.Router();
 
+
 // Register a new user
 
 userRoute.post("/register", handleFileUpload, async (req, res) => {
@@ -63,15 +64,12 @@ userRoute.post("/register", handleFileUpload, async (req, res) => {
 
     const profilePicture = req.file.buffer.toString("base64");
 
-    // Hash password
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  
 
     const user = new User({
       name,
       email,
-      password: hashedPassword,
+      password,
       regId,
       department,
       contact,
@@ -98,16 +96,12 @@ userRoute.post("/login", async (req, res) => {
   try {
     const { regId, password } = req.body;
     // Check if user exists
-    const user = await User.findOne({ regId });
+    const user = await User.findOne({ regId ,password });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Check if password is correct
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
+   
 
     res.status(201).json({
       name: user.name,
@@ -237,5 +231,26 @@ async function getUserById(req, res, next) {
   res.user = user;
   next();
 }
+
+// // Route to add results for a class
+// router.post('/classes/:classId/results', authenticate, isClassTeacher, async (req, res) => {
+//   const { classId } = req.params;
+//   const results = req.body.results;  // Expecting an array of result objects
+
+//   try {
+//       const addedResults = await Result.insertMany(results.map(result => ({
+//           ...result,
+//           class: classId,
+//           addedBy: req.user._id
+//       })));
+
+//       res.status(201).json(addedResults);
+//   } catch (error) {
+//       res.status(500).json({ message: 'Failed to add results', error });
+//   }
+// });
+
+
+
 
 module.exports = userRoute;

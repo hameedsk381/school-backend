@@ -1,81 +1,43 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
+const teacherSchema = new mongoose.Schema({
+  name: String,
   email: {
     type: String,
     required: true,
-   
-  },contact: {
-    type: Number,
-    required: true,
-   
+    unique: true
   },
-  password: {
-    type: String,
-    required: true
-  },
+  contact: Number,
+  password: String,
   regId: {
     type: String,
     required: true,
-    
+    unique: true
   },
-  department: {
-    type: String,
-    required: true
-  },
-  qualifications: {
-    type: String,
-    required: true
-  },
-  profilePicture: {
-    type: String,
-    
-  },
-
-  languages: {
-    type: Array,
-    
-  },
-  currentlyTeaching: {
-    type: Array,
-    
-  },
+  department: String,
+  qualifications: String,
+  profilePicture: String,
+  languages: [String],
+  // Change currentlyTeaching to reference the Class model
+  currentlyTeaching: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Class'
+  }],
   actingClassTeacherFor: {
-    type: String,
-    
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Class'
   },
-  additionalTeachingClasses: {
-    type: Array,
-    
-  },
-  additionalTeachingDepartments: {
-    type: Array,
-    
-  },
-  expertise: {
-    type: Array,
-    
-  },
-  hobbies: {
-    type: String,
-    
-  },
-  resetToken: {
-    type: String,
-    default:null
-  },
-
-  isAdmin :{
-    type : Boolean,
-    default : false
+  additionalTeachingClasses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Class' }],
+  additionalTeachingDepartments: [String],
+  expertise: [String],
+  hobbies: String,
+  resetToken: String,
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
-
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', teacherSchema);
 
 module.exports = User;

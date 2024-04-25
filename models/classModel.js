@@ -1,31 +1,20 @@
 const mongoose = require('mongoose');
 
-const HomeworkSchema = new mongoose.Schema({
-  description: {
-    type: String,
-    required: true
+
+const classSchema = new mongoose.Schema({
+  name: String,
+  teacher: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Teacher'
   },
-  note: {
-    type: String,
-  }
+  students: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
 });
 
-const SubjectSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  homework: [HomeworkSchema]
-});
+const Class = mongoose.model('Class', classSchema);
 
-const ClassSchema = new mongoose.Schema({
-  className: {
-    type: String,
-    required: true
-  },
-  subjects: [SubjectSchema]
-});
 
-const Class = mongoose.model('Class', ClassSchema);
 
 module.exports = Class;
