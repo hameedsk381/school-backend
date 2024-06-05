@@ -15,13 +15,14 @@ exports.registerTeacher = async (req, res) => {
             contact,
             qualifications,
             languages,
-            isAdmin,classesTeaching
+            isAdmin,classesTeaching,additionalclassesTeaching
         });
 
         await newTeacher.save();
         res.status(201).json({ message: "Teacher registered successfully!" });
     } catch (error) {
         res.status(500).json({ message: "Error registering teacher", error: error.message });
+        console.log(error)
     }
 };
 
