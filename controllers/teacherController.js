@@ -31,7 +31,7 @@ exports.loginTeacher = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const teacher = await Teacher.findOne({ email }).populate('classesTeaching');
+        const teacher = await Teacher.findOne({ email }).populate('classesTeaching').populate('additionalclassesTeaching');
         if (!teacher) {
             return res.status(404).json({ message: "Teacher not found" });
         }
