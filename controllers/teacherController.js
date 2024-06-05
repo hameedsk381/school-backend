@@ -3,7 +3,7 @@ const Teacher = require('../models/teacherModel'); // Ensure you have a Teacher 
 
 // Register a new teacher
 exports.registerTeacher = async (req, res) => {
-    const { name, email, password, regId, department, contact, qualifications, languages, isAdmin,classesTeaching } = req.body;
+    const { name, email, password, regId, department, contact, qualifications, languages, isAdmin,classesTeaching,additionalclassesTeaching } = req.body;
 
     try {
         const newTeacher = new Teacher({
