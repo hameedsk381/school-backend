@@ -1,17 +1,10 @@
-const mongoose = require('mongoose');
+const { Schema, default: mongoose } = require("mongoose");
 
-const PredefinedSubjectsSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    
-  },
-  subjects: {
-    type: [String],
-    required: true
-  }
+const subjectSchema = new Schema({
+  name: { type: String, required: true },
+  code: { type: String, required: true }  // e.g., 'MATH101'
 });
 
-const PredefinedSubjects = mongoose.model('PredefinedSubjects', PredefinedSubjectsSchema);
+const Subject = mongoose.model('Subject', subjectSchema);
 
-module.exports = PredefinedSubjects;
+module.exports = Subject;

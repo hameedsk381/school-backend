@@ -1,9 +1,13 @@
 const express = require('express');
-const { saveHomework } = require('../controllers/classController');
-const classrouter = express.Router();
+const router = express.Router();
+const classController = require('../controllers/classContoller');
 
+router.post('/', classController.createClass);
+router.get('/', classController.getAllClasses);
+router.get('/:classId', classController.getClassById);
+router.put('/:classId', classController.updateClass);
+router.delete('/:classId', classController.deleteClass);
+// POST /api/classes/:classId/assign-teacher
+router.post('/:classId/assign-teacher', classController.assignTeacher);
 
-// POST route to save homework
-classrouter.post('/', saveHomework);
-
-module.exports = classrouter;
+module.exports = router;

@@ -1,28 +1,19 @@
+const { Schema } = require('mongoose');
 const mongoose = require('mongoose');
 
-const examSchema = new mongoose.Schema({
-  title: String,
-  startDate: Date,
-  endDate: Date,
-  class: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Class'
-  },
-  semester: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Semester'
-  },
-  subjects: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Subject'
-  }],
-  maxMarks: Number, // You could also have maxMarks per subject if it varies.
-  type: {
-    type: String,
-    enum: ['unit', 'main'], // Defines if the exam is a unit test or the main test
-    required: true
-  }
+const subjectSchema = new Schema({
+    name: { type: String, required: true },
+    code: { type: String, required: true }
 });
+
+const examSchema = new Schema({
+    title: { type: String, required: true },
+    date: { type: Date, required: true },
+    class: { type: Schema.Types.ObjectId, ref: 'Class' },
+    subjects: [subjectSchema],
+    type: { type: String, required: true, enum: ['Mid Term', 'Main'] } // Type of exam
+});
+
 
 const Exam = mongoose.model('Exam', examSchema);
 module.exports = Exam;

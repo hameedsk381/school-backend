@@ -61,23 +61,23 @@ exports.deleteHomework = async (req, res) => {
         subject,
       });
   
-      if (deletedHomework) {
-        // Log the delete operation
-        const log = new HomeworkLog({
-          classname,
-          section,
-          subject,
-          description: deletedHomework.description,
-          note: deletedHomework.note,
-          operation: 'delete',
-          regId,
-        });
-        await log.save();
+      // if (deletedHomework) {
+      //   // Log the delete operation
+      //   const log = new HomeworkLog({
+      //     classname,
+      //     section,
+      //     subject,
+      //     description: deletedHomework.description,
+      //     note: deletedHomework.note,
+      //     operation: 'delete',
+      //     regId,
+      //   });
+      //   await log.save();
   
-        res.status(200).json({ message: 'Homework deleted successfully' });
-      } else {
-        res.status(404).json({ message: 'Homework not found' });
-      }
+      //   res.status(200).json({ message: 'Homework deleted successfully' });
+      // } else {
+      //   res.status(404).json({ message: 'Homework not found' });
+      // }
     } catch (error) {
       res.status(500).json({ message: 'Failed to delete homework' });
     }
