@@ -113,4 +113,23 @@ exports.deleteHomework = async (req, res) => {
       res.status(500).json({ message: 'Failed to fetch homework' });
     }
   };
+  exports.teacherHomeworks = async (req, res) => {
+    const { teacherId } = req.params; // Assuming teacherId is passed as a URL param
   
+    try {
+      // Find the teacher by ID to validate
+      const teacher = await Teacher.findById(teacherId);
+      if (!teacher) {
+        return res.status(404).json({ error: 'Teacher not found' });
+      }
+  
+      // Find homeworks assigned by the teacher
+      const homeworks = await Homework.find({ teacher: teacherId }).populate('subject')
+      .populate('classname');;
+  
+      res.status(200).json(homeworks);
+    } catch (error) {
+      console.error('Error fetching teacher homeworks:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };

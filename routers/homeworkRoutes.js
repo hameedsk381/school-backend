@@ -12,5 +12,5 @@ homeworkrouter.get(
   homeworkController.getHomeworkByClassSection
 );
 homeworkrouter.get("/", homeworkController.getAllHomework);
-
+homeworkrouter.get("/teacher/:teacherId",homeworkController.teacherHomeworks)
 module.exports = homeworkrouter;
