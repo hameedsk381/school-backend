@@ -8,7 +8,7 @@ homeworkrouter.post("/", homeworkController.submitHomework);
 
 // Route to fetch homework by class, section, and subject
 homeworkrouter.get(
-  "/:classname/:section",
+  "/:id",
   homeworkController.getHomeworkByClassSection
 );
 homeworkrouter.get("/", homeworkController.getAllHomework);

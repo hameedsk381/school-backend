@@ -14,6 +14,7 @@ const homeworkrouter = require("./routers/homeworkRoutes");
 // const logrouter = require("./routers/HomeworkLogRoutes");
 const resultsRouter = require('./routers/resultsRouter')
 const classRoutes = require('./routers/classRoutes');
+const subjectRoutes = require('./routers/subjectsRouter');
 const Class = require("./models/classModel");
 const Student = require("./models/studentModel");
 const Subject = require("./models/subjectModel");
@@ -51,7 +52,7 @@ app.use("/announcements", announcementRouter);
 app.use("/events", eventRouter);
 // app.use("/homework",classrouter);
 // app.use("/homeworklog", logrouter);
-// app.use("/",subjectsrouter);
+app.use("/subjects", subjectRoutes);
 app.use("/homework", homeworkrouter);
 app.use('/results', resultRouter);
 app.use('/exams', examRouter);
@@ -60,6 +61,7 @@ app.use('/exams', examRouter);
 //   console.error(err.stack);
 //   res.status(500).send("Something broke!");
 // });
+
 app.use('/results',resultsRouter);
 app.listen(port, () => {
   console.log(`Server running at ${port}`);

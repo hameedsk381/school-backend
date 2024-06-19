@@ -9,9 +9,14 @@ router.post('/register', teacherController.registerTeacher);
 router.post('/login', teacherController.loginTeacher);
 // GET /api/teachers - Get all teachers
 router.get('/', teacherController.getAllTeachers);
-
+// GET /api/teachers - Get all teachers
+router.get('/:department', teacherController.getTeachersByDepartment);
+router.get('/departments/list', teacherController.getDepartmentNames);
 // PUT /api/teachers/:id - Update a teacher's profile
 router.put('/:id', teacherController.updateTeacherProfile);
+
+router.get('/profile/:id', teacherController.getTeacherById);
 router.post('/teachers/reset-password',teacherController.resetPassword);
 router.post('/teachers/reset-password/confirm',teacherController.confirmReset );
+router.delete('/:id',teacherController.deleteTeacher)
 module.exports = router;

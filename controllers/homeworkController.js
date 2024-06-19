@@ -1,54 +1,58 @@
 
+const moment = require("moment");
+const Class = require("../models/classModel");
 const Homework = require("../models/homeworkModel");
+const Subject = require("../models/subjectModel");
+const Teacher = require("../models/teacherModel");
 
 
-// Controller function to submit homework
 exports.submitHomework = async (req, res) => {
-    try {
-      const { classname, section, subject, description, note, regId } = req.body;
-  
-      // Update or create homework entry
-      const existingHomework = await Homework.findOne({
-        classname,
-        section,
-        subject,
-      });
-  
-      if (existingHomework) {
-        // Combination exists, update description and note
-        existingHomework.description = description;
-        existingHomework.note = note;
-        await existingHomework.save();
-      } else {
-        // Combination doesn't exist, create new homework entry
-        const homework = new Homework({
-          classname,
-          section,
-          subject,
-          description,
-          note,
-          regId
-        });
-        await homework.save();
-      }
-  
-      // Log the submit operation
-    //   const log = new HomeworkLog({
-    //     classname,
-    //     section,
-    //     subject,
-    //     description,
-    //     note,
-    //     operation: 'submit',
-    //     regId
-    //   });
-    //   await log.save();
-  
-      res.status(201).json({ message: 'Homework submitted successfully' });
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to submit homework', error });
+  try {
+    const { classname, subject, description, note, teacher, attachment } = req.body;
+
+    // Fetch subject ObjectId
+    const subjectObj = await Subject.findOne({ name: subject });
+    if (!subjectObj) {
+      return res.status(404).json({ message: 'Subject not found' });
     }
-  };
+
+    // Calculate expiration time (24 hours from now)
+    const expirationTime = moment().add(24, 'hours');
+
+    // Update or create homework entry
+    let existingHomework = await Homework.findOne({
+      classname,
+      subject: subjectObj._id,
+      teacher,
+    });
+
+    if (existingHomework) {
+      // Combination exists, update description, note, and expiration time
+      existingHomework.description = description;
+      existingHomework.note = note;
+      existingHomework.attachment = attachment;
+      existingHomework.expirationTime = expirationTime; // Update expiration time
+      await existingHomework.save();
+    } else {
+      // Combination doesn't exist, create new homework entry
+      const homework = new Homework({
+        classname,
+        subject: subjectObj._id,
+        description,
+        note,
+        teacher,
+        attachment,
+        creationTime: new Date(), // Set creation time
+        expirationTime, // Set expiration time
+      });
+      await homework.save();
+    }
+
+    res.status(201).json({ message: 'Homework submitted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to submit homework', error: error.message });
+  }
+};
 // Controller function to delete homework
 exports.deleteHomework = async (req, res) => {
     try {
@@ -83,22 +87,26 @@ exports.deleteHomework = async (req, res) => {
     }
   };
   
-  // Controller function to get homework by class and section
   exports.getHomeworkByClassSection = async (req, res) => {
     try {
-      const { classname, section } = req.params;
+      const { id } = req.params;
   
-      // Find homework matching the class and section
-      const homework = await Homework.find({ classname, section });
+      // Find homework matching the class and populate classname, subject, and teacher fields
+      const homework = await Homework.find({ classname:id })
+        .populate('classname', 'name') // Assuming classname refers to a Class model with a 'name' field
+        .populate('subject', 'name')   // Assuming subject refers to a Subject model with a 'name' field
+        .populate('teacher', 'name');   // Assuming teacher refers to a Teacher model with a 'name' field
   
       res.status(200).json({ homework });
     } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch homework' });
+      res.status(500).json({ message: 'Failed to fetch homework', error: error.message });
     }
   };
   exports.getAllHomework = async (req, res) => {
     try {
-      const homework = await Homework.find();
+      const homework = await Homework.find() .populate('classname', 'name') // Assuming classname refers to a Class model with a 'name' field
+      .populate('subject', 'name')   // Assuming subject refers to a Subject model with a 'name' field
+      .populate('teacher', 'name');   // Assuming teacher refers to a Teacher model with a 'name' field;
   
       res.status(200).json({ homework });
     } catch (error) {

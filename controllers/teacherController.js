@@ -1,4 +1,5 @@
 
+const Department = require('../models/departmentModel');
 const Teacher = require('../models/teacherModel'); // Ensure you have a Teacher model
 
 // Register a new teacher
@@ -28,21 +29,29 @@ exports.registerTeacher = async (req, res) => {
 
 // Login a teacher
 exports.loginTeacher = async (req, res) => {
-    const { email, password } = req.body;
+   const { email, password } = req.body;
 
-    try {
-        const teacher = await Teacher.findOne({ email }).populate('classesTeaching').populate('additionalclassesTeaching');
-        if (!teacher) {
-            return res.status(404).json({ message: "Teacher not found" });
-        }
+try {
+    // Convert the first letter of email to lowercase
+    const formattedEmail = email.charAt(0).toLowerCase() + email.slice(1);
 
-        if (teacher.password !== password) {
-            return res.status(400).json({ message: "Invalid credentials" });
-        }
-        res.json({ message: "Logged in successfully",teacher });
-    } catch (error) {
-        res.status(500).json({ message: "Login error", error: error.message });
+    const teacher = await Teacher.findOne({ email: formattedEmail })
+        .populate('classesTeaching')
+        .populate('additionalclassesTeaching');
+
+    if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
     }
+
+    if (teacher.password !== password) {
+        return res.status(400).json({ message: "Invalid credentials" });
+    }
+ 
+    res.json({ message: "Logged in successfully", teacher });
+} catch (error) {
+    res.status(500).json({ message: "Login error", error: error.message });
+}
+
 };
 
 // Update teacher profile
@@ -55,12 +64,12 @@ exports.updateTeacherProfile = async (req, res) => {
         if (!updatedTeacher) {
             return res.status(404).json({ message: "Teacher not found" });
         }
-        res.json({ message: "Teacher profile updated successfully", updatedTeacher });
+        res.json({ message: "Teacher profile updated successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error updating teacher profile", error: error.message });
     }
 };
-exports.resetPassword =  async (req, res) => {
+exports.resetPassword =  async (req, res) => {``
     const { email } = req.body;
     try {
         const teacher = await Teacher.findOne({ email });
@@ -100,9 +109,60 @@ exports.confirmReset = async (req, res) => {
 
 exports.getAllTeachers = async (req, res) => {
     try {
-        const teachers = await Teacher.find({}, { _id: 1, name: 1 });
+        const teachers = await Teacher.find({})
+            .populate('classesTeaching') // Populate classesTeaching field
+            .populate('additionalclassesTeaching'); // Populate additionalclassesTeaching field
+        
         res.json(teachers);
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve teachers", error });
     }
 };
+exports.getTeachersByDepartment = async (req, res) => {
+    try {
+        const { department } = req.params;
+        const teachers = await Teacher.find({ department });
+        res.json(teachers);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve teachers by department", error });
+    }
+};
+exports.getDepartmentNames = async (req, res) => {
+    try {
+        const departments = await Teacher.distinct('department');
+        
+        res.json(departments);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve department names", error });
+    }
+};
+exports.getTeacherById = async (req, res) => {
+    try {
+        const teacherId = req.params.id;
+        const teacher = await Teacher.findById(teacherId)
+            .populate('department', 'name')  // Populate department name
+            .populate('classesTeaching', 'name')  // Populate class name
+            .populate('additionalclassesTeaching', 'name');  // Populate additional class name
+
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        res.json(teacher);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching teacher details', error });
+    }
+};
+exports.deleteTeacher = async (req,res) => {
+    try {
+        const teacherId = req.params.id;
+        const teacher = await Teacher.findByIdAndDelete(teacherId);
+        if(teacher){
+            res.status(200).json({ message: "Teacher deleted successfully!" });
+        }  else {
+            return res.status(404).json({message:'Teacher not found'})
+        }
+    } catch (error) {
+         res.status(500).json({ message: "Failed to delete user", error });
+    }
+}
