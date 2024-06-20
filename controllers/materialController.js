@@ -1,23 +1,6 @@
 const Material = require('../models/materialModel');
 const axios = require('axios');
 
-// Function to handle file upload to external API
-const handleFileUpload = async (file) => {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  try {
-    const response = await axios.post('https://reanarration-fastify-api.vercel.app/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return response.data; // Assuming API response contains the URL of the uploaded file
-  } catch (error) {
-    console.error('Failed to upload image', error);
-    throw new Error('Failed to upload image');
-  }
-};
 
 // Controller function to submit a new material
 const submitMaterial = async (req, res) => {
@@ -41,15 +24,24 @@ const submitMaterial = async (req, res) => {
     });
 
     // Save the new Material document to the database
-    const savedMaterial = await newMaterial.save();
+  await newMaterial.save();
 
-    res.status(201).json({ message: 'Material submitted successfully', material: savedMaterial });
+    res.status(201).json({ message: 'Material submitted successfully' });
   } catch (error) {
     console.error('Failed to submit material:', error);
     res.status(500).json({ message: 'Failed to submit material', error: error.message });
   }
 };
+const getAllMaterials = async (req,res) => {
 
+try {
+  const materials = await Material.find({});
+  res.status(200).json(materials);
+} catch (error) {
+  console.error('Failed to submit material:', error);
+  res.status(500).json({ message: 'Failed to get materials', error: error.message });
+}
+}
 module.exports = {
-  submitMaterial
+  submitMaterial,getAllMaterials
 };
