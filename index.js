@@ -15,6 +15,7 @@ const homeworkrouter = require("./routers/homeworkRoutes");
 const resultsRouter = require('./routers/resultsRouter')
 const classRoutes = require('./routers/classRoutes');
 const subjectRoutes = require('./routers/subjectsRouter');
+const materialRouter = require('./routers/materialRouter')
 const Class = require("./models/classModel");
 const Student = require("./models/studentModel");
 const Subject = require("./models/subjectModel");
@@ -56,6 +57,7 @@ app.use("/subjects", subjectRoutes);
 app.use("/homework", homeworkrouter);
 app.use('/results', resultRouter);
 app.use('/exams', examRouter);
+app.use('/material', materialRouter);
 // Error handling middleware
 // app.use((err, req, res, next) => {
 //   console.error(err.stack);
