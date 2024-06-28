@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const homeworkSchema = new mongoose.Schema({
     classname: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: true }, // Reference to the Class model
-    subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true }, // Reference to the Subject model
+    subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true }, // Reference to the Subject model
     description: { type: String, required: true },
     note: { type: String },
     teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher', required: true }, // Reference to the Teacher model
