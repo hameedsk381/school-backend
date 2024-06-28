@@ -4,6 +4,7 @@ const Class = require("../models/classModel");
 const Homework = require("../models/homeworkModel");
 const Subject = require("../models/subjectModel");
 const Teacher = require("../models/teacherModel");
+const Department = require("../models/departmentModel");
 
 
 exports.submitHomework = async (req, res) => {
@@ -11,7 +12,7 @@ exports.submitHomework = async (req, res) => {
     const { classname, subject, description, note, teacher, attachment } = req.body;
 
     // Fetch subject ObjectId
-    const subjectObj = await Subject.findOne({ name: subject });
+    const subjectObj = await Department.findOne({ name: subject });
     if (!subjectObj) {
       return res.status(404).json({ message: 'Subject not found' });
     }
