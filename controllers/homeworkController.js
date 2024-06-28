@@ -95,7 +95,7 @@ exports.deleteHomework = async (req, res) => {
       // Find homework matching the class and populate classname, subject, and teacher fields
       const homework = await Homework.find({ classname:id })
         .populate('classname', 'name') // Assuming classname refers to a Class model with a 'name' field
-        .populate('Department', 'name')   // Assuming subject refers to a Subject model with a 'name' field
+        .populate('subject', 'name')   // Assuming subject refers to a Subject model with a 'name' field
         .populate('teacher', 'name');   // Assuming teacher refers to a Teacher model with a 'name' field
   
       res.status(200).json({ homework });
