@@ -34,11 +34,9 @@ exports.loginTeacher = async (req, res) => {
 try {
     // Convert the first letter of email to lowercase
     const formattedEmail = email.charAt(0).toLowerCase() + email.slice(1);
-
     const teacher = await Teacher.findOne({ email: formattedEmail })
-        .populate('classesTeaching')
-        .populate('additionalclassesTeaching');
-
+        .populate({ path: 'classesTeaching', populate: { path: 'subjects' } })
+        .populate({ path: 'additionalclassesTeaching', populate: { path: 'subjects' } })
     if (!teacher) {
         return res.status(404).json({ message: "Teacher not found" });
     }
