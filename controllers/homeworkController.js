@@ -8,9 +8,9 @@ const Department = require("../models/departmentModel");
 
 
 exports.submitHomework = async (req, res) => {
-  try {
-    const { classname, subject, description, note, teacher, attachment } = req.body;
+  const { classname, subject, description, note, teacher, attachment } = req.body;
 
+  try {
     // Fetch subject ObjectId
     const subjectObj = await Department.findOne({ name: subject });
     if (!subjectObj) {
@@ -21,36 +21,22 @@ exports.submitHomework = async (req, res) => {
     const expirationTime = moment().add(24, 'hours');
 
     // Update or create homework entry
-    let existingHomework = await Homework.findOne({
-      classname,
-      subject: subjectObj._id,
-      teacher,
-    });
+    const updateData = {
+      description,
+      note,
+      attachment,
+      expirationTime
+    };
 
-    if (existingHomework) {
-      // Combination exists, update description, note, and expiration time
-      existingHomework.description = description;
-      existingHomework.note = note;
-      existingHomework.attachment = attachment;
-      existingHomework.expirationTime = expirationTime; // Update expiration time
-      await existingHomework.save();
-    } else {
-      // Combination doesn't exist, create new homework entry
-      const homework = new Homework({
-        classname,
-        subject: subjectObj._id,
-        description,
-        note,
-        teacher,
-        attachment,
-        creationTime: new Date(), // Set creation time
-        expirationTime, // Set expiration time
-      });
-      await homework.save();
-    }
+    const homework = await Homework.findOneAndUpdate(
+      { classname, subject: subjectObj._id, teacher },
+      updateData,
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
 
-    res.status(201).json({ message: 'Homework submitted successfully' });
+    res.status(201).json({ message: 'Homework submitted successfully', homework });
   } catch (error) {
+    console.error('Failed to submit homework:', error);
     res.status(500).json({ message: 'Failed to submit homework', error: error.message });
   }
 };

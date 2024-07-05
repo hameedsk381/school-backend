@@ -1,4 +1,5 @@
 
+const Class = require('../models/classModel');
 const Department = require('../models/departmentModel');
 const Teacher = require('../models/teacherModel'); // Ensure you have a Teacher model
 
@@ -26,7 +27,6 @@ exports.registerTeacher = async (req, res) => {
         console.log(error)
     }
 };
-
 // Login a teacher
 exports.loginTeacher = async (req, res) => {
    const { email, password } = req.body;
@@ -35,25 +35,32 @@ try {
     // Convert the first letter of email to lowercase
     const formattedEmail = email.charAt(0).toLowerCase() + email.slice(1);
 
-    const teacher = await Teacher.findOne({ email: formattedEmail })
+    const teacherDetails = await Teacher.findOne({ email: formattedEmail })
         .populate('classesTeaching')
         .populate('additionalclassesTeaching')
 
-    if (!teacher) {
+    if (!teacherDetails) {
         return res.status(404).json({ message: "Teacher not found" });
     }
 
-    if (teacher.password !== password) {
+    if (teacherDetails.password !== password) {
         return res.status(400).json({ message: "Invalid credentials" });
     }
- 
-    res.json({ message: "Logged in successfully", teacher });
+
+    // Add classTeacherFor in response. For value, search for classTeacher in the Class collection. If found, get the name and add it to the response
+    const classTeacher = await Class.findOne({ classTeacher: teacherDetails._id });
+    const classTeacherName = classTeacher ? classTeacher : null;
+
+    const teacherWithDetails = { ...teacherDetails._doc, classTeacherName }; // Include teacher name in details object
+
+  
+    res.json({ message: "Logged in successfully", teacher: teacherWithDetails });
 } catch (error) {
     res.status(500).json({ message: "Login error", error: error.message });
+    console.log(error);
 }
 
 };
-
 // Update teacher profile
 exports.updateTeacherProfile = async (req, res) => {
     const { id } = req.params;
